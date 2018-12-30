@@ -56,6 +56,7 @@ export default class Siema {
       threshold: 20,
       loop: false,
       rtl: false,
+      slideCountColor: '#ff0000',
       onInit: () => {},
       onChange: () => {},
     };
@@ -193,12 +194,35 @@ export default class Siema {
     // Add fragment to the frame
     this.sliderFrame.appendChild(docFragment);
 
+    // Add slide count
+    const slideCount = this.createSlideCount(this.innerElements.length);
+    this.sliderFrame.appendChild(slideCount);
+
     // Clear selector (just in case something is there) and insert a frame
     this.selector.innerHTML = '';
     this.selector.appendChild(this.sliderFrame);
 
     // Go to currently active slide after initial build
     this.slideToCurrent();
+  }
+
+  createSlideCount(slideCount = 1, activeSlide = 0) {
+    const slideCountList = document.createElement('ul');
+    slideCountList.id = 'slide-count-list';
+    slideCountList.style.listStyle = 'none';
+
+    for (let i = 0; i < slideCount; i++) {
+      const slideCountItem = document.createElement('li');
+      slideCountItem.id = `slide-count-item-${i}`;
+      slideCountItem.innerText = '&middot;';
+      slideCountItem.style.padding = '10px';
+
+      if (i === activeSlide) {
+        slideCountItem.style.color = this.config.slideCountColor;
+      }
+      slideCountList.appendChild(slideCountItem);
+    }
+    return slideCountList;
   }
 
   buildSliderFrameItem(elm) {
