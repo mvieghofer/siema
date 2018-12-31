@@ -56,6 +56,7 @@ export default class Siema {
       threshold: 20,
       loop: false,
       rtl: false,
+      slideCountColor: '#ff0000',
       onInit: () => {},
       onChange: () => {},
     };
@@ -193,12 +194,52 @@ export default class Siema {
     // Add fragment to the frame
     this.sliderFrame.appendChild(docFragment);
 
+
     // Clear selector (just in case something is there) and insert a frame
     this.selector.innerHTML = '';
     this.selector.appendChild(this.sliderFrame);
 
+    // Add slide count
+    const slideCount = this.createSlideCount(this.innerElements.length);
+    this.selector.appendChild(slideCount);
+
     // Go to currently active slide after initial build
     this.slideToCurrent();
+  }
+
+  createSlideCount(slideCount = 1, activeSlide = 0) {
+    const slideCountList = document.createElement('ul');
+    slideCountList.id = 'slide-count-list';
+    slideCountList.style.listStyle = 'none';
+
+    for (let i = 0; i < slideCount; i++) {
+      const slideCountItem = document.createElement('li');
+      slideCountItem.id = `slide-count-item-${i}`;
+      slideCountItem.style.height = '5px';
+      slideCountItem.style.width = '5px';
+      slideCountItem.style.borderRadius = '50';
+      slideCountItem.style.margin = '25px 10px 10px 10px';
+      slideCountItem.style.display = 'inline-block';
+      slideCountItem.style.backgroundColor = '#000';
+
+      if (i === activeSlide) {
+        slideCountItem.style.backgroundColor = this.config.slideCountColor;
+      }
+      slideCountList.appendChild(slideCountItem);
+    }
+    return slideCountList;
+  }
+
+  updateSlideCount(activeItem) {
+    const listItems = document.querySelectorAll('#slide-count-list li');
+    for (let i = 0; i < listItems.length; i++) {
+      const slideCountItem = listItems[i];
+      slideCountItem.style.backgroundColor = '#000';
+
+      if (i === activeItem) {
+        slideCountItem.style.backgroundColor = this.config.slideCountColor;
+      }
+    }
   }
 
   buildSliderFrameItem(elm) {
@@ -365,6 +406,8 @@ export default class Siema {
   slideToCurrent(enableTransition) {
     const currentSlide = this.config.loop ? this.currentSlide + this.perPage : this.currentSlide;
     const offset = (this.config.rtl ? 1 : -1) * currentSlide * (this.selectorWidth / this.perPage);
+
+    this.updateSlideCount(currentSlide - 1);
 
     if (enableTransition) {
       // This one is tricky, I know but this is a perfect explanation:
