@@ -217,7 +217,7 @@ export default class Siema {
       slideCountItem.id = `slide-count-item-${i}`;
       slideCountItem.style.height = '5px';
       slideCountItem.style.width = '5px';
-      slideCountItem.style.borderRadius = '50';
+      slideCountItem.style.borderRadius = '50%';
       slideCountItem.style.margin = '25px 10px 10px 10px';
       slideCountItem.style.display = 'inline-block';
       slideCountItem.style.backgroundColor = '#000';
